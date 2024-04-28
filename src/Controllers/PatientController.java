@@ -84,7 +84,7 @@ public class PatientController {
         System.out.print("Entrez l'ID du patient à mettre à jour : ");
         int patientId = scanner.nextInt();
 
-        try (Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/login_shema", "root", "Chedysoltani")) {
+        try (Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/login_shema", "root", "")) {
             // Vérifier si le patient existe dans la base de données
             String checkIdQuery = "SELECT COUNT(*) FROM PATIENT WHERE idPatient = ?";
             PreparedStatement checkIdStatement = connection.prepareStatement(checkIdQuery);
