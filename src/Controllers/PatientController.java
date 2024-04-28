@@ -147,24 +147,30 @@ public class PatientController {
     }
 
     public static void deletePatient(PatientController patientController, Scanner scanner) {
-        System.out.println("Suppression d'un patient :");
-        System.out.print("Entrez l'index du patient à supprimer : ");
-        int index = scanner.nextInt();
+        // Demander à l'utilisateur de saisir l'ID du patient à supprimer
+        System.out.print("Entrez l'ID du patient à supprimer : ");
+        int patientId = scanner.nextInt();
 
-        // Vérifier si l'index est valide
-        if (index >= 0 && index < patientController.getAllPatients().size()) {
-            // Confirmer la suppression avec l'utilisateur
-            System.out.println("Êtes-vous sûr de vouloir supprimer ce patient ? (Oui/Non)");
-            String confirmation = scanner.next();
-            if (confirmation.equalsIgnoreCase("oui")) {
-                // Supprimer le patient à l'index spécifié
-                patientController.deletePatient(index);
+        try (Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/login_shema", "root", "")) {
+            // Vérifier si le patient existe dans la base de données
+            String checkIdQuery = "SELECT COUNT(*) FROM PATIENT WHERE idPatient = ?";
+            PreparedStatement checkIdStatement = connection.prepareStatement(checkIdQuery);
+            checkIdStatement.setInt(1, patientId);
+            ResultSet resultSet = checkIdStatement.executeQuery();
+            resultSet.next();
+            int count = resultSet.getInt(1);
+            if (count > 0) {
+                // Supprimer le patient de la base de données
+                String deleteQuery = "DELETE FROM PATIENT WHERE idPatient = ?";
+                PreparedStatement deleteStatement = connection.prepareStatement(deleteQuery);
+                deleteStatement.setInt(1, patientId);
+                deleteStatement.executeUpdate();
                 System.out.println("Patient supprimé avec succès !");
             } else {
-                System.out.println("Suppression annulée.");
+                System.out.println("Aucun patient trouvé avec cet ID.");
             }
-        } else {
-            System.out.println("Index invalide.");
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la suppression du patient : " + e.getMessage());
         }
     }
 
