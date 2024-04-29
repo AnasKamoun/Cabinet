@@ -1,14 +1,11 @@
+import Controllers.MedicationController;
 import Controllers.PatientController;
-import Models.Medication;
-import Models.Patient;
-import Models.Prescription;
-import View.PrescriptionView;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.util.List;
 import java.util.Scanner;
 
+import static Controllers.MedicationController.*;
 import static Controllers.PatientController.*;
 
 public class Main {
@@ -20,7 +17,7 @@ public class Main {
         } catch (Exception e) {
             System.out.println("Erreur lors de la connexion à la base de données : " + e.getMessage());
         }
-
+        MedicationController MedicationController = new MedicationController();
         PatientController patientController = new PatientController();
         Scanner scanner = new Scanner(System.in);
         boolean exit = false;
@@ -43,15 +40,17 @@ public class Main {
                     break;
                 case 2:
                     // Menu de gestion des médicaments
-                    manageMedicines(scanner);
+                    manageMedications(MedicationController,scanner);
                     break;
                 case 3:
                     // Menu de gestion des ordonnances
+/*
                     manageOrdonance(scanner);
+*/
                     break;
                 case 4:
                     // Menu de gestion des réservations
-                    manageReservations(scanner);
+                    /*manageReservations(scanner);*/
                     break;
                 case 5:
                     // Quitter le programme
@@ -63,60 +62,6 @@ public class Main {
         }
 
         scanner.close();
-    }
-
-    private static void manageReservations(Scanner scanner) {
-    }
-
-    private static void manageOrdonance(Scanner scanner) {
-
-        // Demander les informations sur le patient
-        System.out.println("Entrez le nom du patient : ");
-        String patientName = scanner.nextLine();
-
-        int patientAge = scanner.nextInt();
-
-
-        System.out.println("Entrez l'âge du patient : ");
-        scanner.nextLine(); // Pour consommer la nouvelle ligne
-
-
-        System.out.println("Entrez le sexe du patient : ");
-        String patientGender = scanner.nextLine();
-
-
-        System.out.println("Entrez les antécédents médicaux du patient : ");
-        String patientMedicalHistory = scanner.nextLine();
-
-        // Créer une instance de patient avec les informations saisies
-        Patient patient = new Patient(patientName, patientAge, patientGender, patientMedicalHistory);
-
-        // Demander le nombre de médicaments
-        System.out.println("Combien de médicaments souhaitez-vous ajouter à la prescription ?");
-        int numberOfMedications = scanner.nextInt();
-        scanner.nextLine(); // Pour consommer la nouvelle ligne
-        // Exemple de création de médicaments
-        System.out.println("Enter medication name:");
-        String name = scanner.nextLine();
-
-        System.out.println("Enter medication dosage:");
-        String dosage = scanner.nextLine();
-
-        System.out.println("Enter medication instructions:");
-        String instructions = scanner.nextLine();
-
-        Medication medication = new Medication(name, dosage, instructions);
-
-        // Exemple de création d'une prescription
-        Prescription prescription = new Prescription(patient, List.of(medication));
-
-        // Affichez l'ordonnance à l'aide de la vue de prescription
-        PrescriptionView prescriptionView = new PrescriptionView();
-        prescriptionView.printPrescription(prescription);
-    }
-
-    private static void manageMedicines(Scanner scanner) {
-        
     }
 
     private static void manageClients(PatientController patientController, Scanner scanner) {
@@ -158,6 +103,47 @@ public class Main {
             }
         }
     }
+
+    private static void manageMedications(MedicationController medicationController, Scanner scanner) {
+        boolean exit = false;
+        while (!exit) {
+            System.out.println("Medication Management Menu:");
+            System.out.println("1. Display all medications");
+            System.out.println("2. Add a new medication");
+            System.out.println("3. Update medication information");
+            System.out.println("4. Delete a medication");
+            System.out.println("5. Return to main menu");
+            System.out.print("Choose an option: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // To consume the leftover newline character
+
+            switch (choice) {
+                case 1:
+                    // Display all medications
+                    displayAllMedications(medicationController);
+                    break;
+                case 2:
+                    // Add a new medication
+                    createNewMedication(medicationController, scanner);
+                    break;
+                case 3:
+                    // Update medication information
+                    updateMedication(medicationController, scanner);
+                    break;
+                case 4:
+                    // Delete a medication
+                    deleteMedication(medicationController, scanner);
+                    break;
+                case 5:
+                    // Return to main menu
+                    exit = true;
+                    break;
+                default:
+                    System.out.println("Invalid option. Please choose again.");
+            }
+        }
+    }
+
 
     // Les autres méthodes pour les menus de gestion des médicaments, des ordonnances et des réservations
 }
