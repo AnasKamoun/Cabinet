@@ -1,6 +1,7 @@
 import Controllers.MedicationController;
 import Controllers.OrdenanceController;
 import Controllers.PatientController;
+import Controllers.ReservationController;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,9 +9,12 @@ import java.util.Scanner;
 
 import static Controllers.MedicationController.*;
 import static Controllers.PatientController.*;
+import static Controllers.ReservationController.createNewReservation;
+import static Controllers.ReservationController.displayReservations;
 
 public class Main {
     public static void main(String[] args) {
+        ReservationController reservationController = new ReservationController();
         final String URL = "jdbc:mysql://127.0.0.1:3306/login_shema2";
         try {
             Connection connection = DriverManager.getConnection(URL, "root", "");
@@ -49,8 +53,9 @@ public class Main {
                     manageOrdonance();
                     break;
                 case 4:
-                    // Menu de gestion des réservations
-                    /*manageReservations(scanner);*/
+
+
+                    manageReservations(reservationController, scanner);
                     break;
                 case 5:
                     // Quitter le programme
@@ -63,6 +68,7 @@ public class Main {
 
         scanner.close();
     }
+
     public static void manageOrdonance() {
         Scanner scanner = new Scanner(System.in);
         OrdenanceController ordenanceController = new OrdenanceController();
@@ -184,6 +190,39 @@ public class Main {
         }
     }
 
+    public static void manageReservations(ReservationController reservationController, Scanner scanner){
+        boolean exit = false;
+        while (!exit) {
+            System.out.println("\nMenu:");
+            System.out.println("1. Create New Reservation");
+            System.out.println("2. Display Reservations");
+            System.out.println("3. Exit");
+            System.out.print("Enter your choice: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine();  // Consume newline
 
-    // Les autres méthodes pour les menus de gestion des médicaments, des ordonnances et des réservations
+            switch (choice) {
+                case 1:
+                    ReservationController.createNewReservation(scanner);
+                    break;
+                case 2:
+                    ReservationController.displayReservations();
+                    break;
+                case 3:
+                    exit = true;
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please enter a number between 1 and 3.");
+            }
+        }
+
+        scanner.close();
+        System.out.println("Program exited.");
+    }
+
+
 }
+
+
+
+
