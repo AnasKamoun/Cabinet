@@ -28,7 +28,7 @@ public class MedicationController {
         System.out.println("New medication added successfully!");
 
         try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/login_shema", "root", "");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/login_shema2", "root", "");
             String sql = "INSERT INTO medication (name, dosage, instructions) VALUES (?, ?, ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, name);
@@ -53,8 +53,27 @@ public class MedicationController {
 
     public static void displayAllMedications(MedicationController medicationController) {
         System.out.println("Medications list:");
-        for (Medication med : medicationController.getAllMedications()) {
-            System.out.println("ID: " + med.getIdMed() + ", Name: " + med.getName() + ", Dosage: " + med.getDosage() + ", Instructions: " + med.getInstructions());
+        try {
+            Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/login_shema2", "root", "");
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM MEDICATION");
+
+            // Parcourir le ResultSet et afficher les données de chaque médicament
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id_med");
+                String name = resultSet.getString("name");
+                String dosage = resultSet.getString("dosage");
+                String instructions = resultSet.getString("instructions");
+
+                System.out.println("ID: " + id + ", Name: " + name + ", Dosage: " + dosage + ", Instructions: " + instructions);
+            }
+
+            // Fermeture des ressources
+            resultSet.close();
+            statement.close();
+            connection.close();
+        } catch (SQLException e) {
+            System.out.println("Une erreur s'est produite lors de l'affichage des médicaments : " + e.getMessage());
         }
     }
 
@@ -67,7 +86,7 @@ public class MedicationController {
         int medId = scanner.nextInt();
         scanner.nextLine();  // Clear buffer after reading integer
 
-        try (Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/login_shema", "root", "")) {
+        try (Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/login_shema2", "root", "")) {
             String checkIdQuery = "SELECT COUNT(*) FROM medication WHERE id_med = ?";
             PreparedStatement checkIdStatement = connection.prepareStatement(checkIdQuery);
             checkIdStatement.setInt(1, medId);

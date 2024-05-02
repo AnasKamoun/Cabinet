@@ -1,4 +1,5 @@
 import Controllers.MedicationController;
+import Controllers.OrdenanceController;
 import Controllers.PatientController;
 
 import java.sql.Connection;
@@ -10,7 +11,7 @@ import static Controllers.PatientController.*;
 
 public class Main {
     public static void main(String[] args) {
-        final String URL = "jdbc:mysql://127.0.0.1:3306/login_shema";
+        final String URL = "jdbc:mysql://127.0.0.1:3306/login_shema2";
         try {
             Connection connection = DriverManager.getConnection(URL, "root", "");
             System.out.println("Connexion réussie à la base de données.");
@@ -44,9 +45,8 @@ public class Main {
                     break;
                 case 3:
                     // Menu de gestion des ordonnances
-/*
-                    manageOrdonance(scanner);
-*/
+
+                    manageOrdonance();
                     break;
                 case 4:
                     // Menu de gestion des réservations
@@ -62,6 +62,46 @@ public class Main {
         }
 
         scanner.close();
+    }
+    public static void manageOrdonance() {
+        Scanner scanner = new Scanner(System.in);
+        OrdenanceController ordenanceController = new OrdenanceController();
+
+        boolean exit = false;
+        while (!exit) {
+            System.out.println("\nMenu:");
+            System.out.println("1. Create New Ordenance");
+            System.out.println("2. Display All Ordenances");
+            System.out.println("3. Update Ordenance");
+            System.out.println("4. Delete Ordenance");
+            System.out.println("5. Exit");
+            System.out.print("Enter your choice: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine();  // Consume newline
+
+            switch (choice) {
+                case 1:
+                    OrdenanceController.createNewOrdenance(ordenanceController, scanner);
+                    break;
+                case 2:
+                    OrdenanceController.displayAllOrdenances(ordenanceController);
+                    break;
+                case 3:
+                    OrdenanceController.updateOrdenance(ordenanceController, scanner);
+                    break;
+                case 4:
+                    OrdenanceController.deleteOrdenance(ordenanceController, scanner);
+                    break;
+                case 5:
+                    exit = true;
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please enter a number between 1 and 5.");
+            }
+        }
+
+        scanner.close();
+        System.out.println("Program exited.");
     }
 
     private static void manageClients(PatientController patientController, Scanner scanner) {

@@ -29,7 +29,7 @@ public class PatientController {
         patientController.addPatient(newPatient);
         System.out.println("Nouveau patient ajouté avec succès !");
         try{
-            Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/login_shema", "root", "");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/login_shema2", "root", "");
             String sql = "INSERT INTO patient (nom, prenom, adresse, numeroTelephone) VALUES (?, ?, ?, ?)"; // Removed idPatient from SQL
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, nom); // Adjusted the parameter indices accordingly
@@ -54,7 +54,7 @@ public class PatientController {
     }
     public static void displayAllPatients(PatientController patientController) {
         try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/login_shema", "root", "");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/login_shema2", "root", "");
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM PATIENT");
 
@@ -84,7 +84,7 @@ public class PatientController {
         System.out.print("Entrez l'ID du patient à mettre à jour : ");
         int patientId = scanner.nextInt();
 
-        try (Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/login_shema", "root", "")) {
+        try (Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/login_shema2", "root", "")) {
             // Vérifier si le patient existe dans la base de données
             String checkIdQuery = "SELECT COUNT(*) FROM PATIENT WHERE idPatient = ?";
             PreparedStatement checkIdStatement = connection.prepareStatement(checkIdQuery);
@@ -181,7 +181,7 @@ public class PatientController {
         System.out.print("Entrez l'ID du patient à supprimer : ");
         int patientId = scanner.nextInt();
 
-        try (Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/login_shema", "root", "")) {
+        try (Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/login_shema2", "root", "")) {
             // Vérifier si le patient existe dans la base de données
             String checkIdQuery = "SELECT COUNT(*) FROM PATIENT WHERE idPatient = ?";
             PreparedStatement checkIdStatement = connection.prepareStatement(checkIdQuery);
